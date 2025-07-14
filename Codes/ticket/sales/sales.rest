@@ -1,0 +1,13 @@
+
+
+POST http://localhost:8080/api/events
+Content-Type: application/json
+
+{
+    "description": "Show de Rock da UFOP",
+    "type": "CONCERT",
+    "date": "2025-10-20T20:00:00",
+    "startSales": "2025-08-01T10:00:00",
+    "endSales": "2025-10-19T18:00:00",
+    "price": 75.50
+}

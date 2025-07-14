@@ -1,0 +1,103 @@
+services:
+  nameserver:
+    container_name: nameserver
+    build:
+      context: ./nameserver
+    ports:
+      - "8761:8761"
+    networks:
+      - ticket-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/eureka/apps"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  gateway:
+    container_name: gateway
+    build:
+      context: ./gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - ticket-network
+    depends_on:
+      nameserver:
+        condition: service_healthy
+
+  postgres-users:
+    image: postgres:16-alpine
+    container_name: postgres-users
+    ports:
+      - "5442:5432"
+    environment:
+      - POSTGRES_DB=tickets-users
+      - POSTGRES_USER=pgsql-ticket-master
+      - POSTGRES_PASSWORD=pgsql-ticket-password
+    volumes:
+      - ./01-create-database-users.sql:/docker-entrypoint-initdb.d/01-create-database-users.sql
+    networks:
+      - ticket-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pgsql-ticket-master -d tickets-users"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres-sales:
+    image: postgres:16-alpine
+    container_name: postgres-sales
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=tickets-sales
+      - POSTGRES_USER=pg-tickets-sales
+      - POSTGRES_PASSWORD=tickets-sales-password
+    volumes:
+      - ./02-create-database-sales.sql:/docker-entrypoint-initdb.d/02-create-database-sales.sql
+    networks:
+      - ticket-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pg-tickets-sales -d tickets-sales"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    ports:
+      - "8123:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=web@ufop.edu.br
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    networks:
+      - ticket-network
+
+  users:
+    container_name: users
+    build:
+      context: ./user
+    networks:
+      - ticket-network
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      postgres-users:
+        condition: service_healthy
+
+  sales:
+    container_name: sales
+    build:
+      context: ./sales
+    networks:
+      - ticket-network
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      postgres-sales:
+        condition: service_healthy
+
+networks:
+  ticket-network:
+    driver: bridge
