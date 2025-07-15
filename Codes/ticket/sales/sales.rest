@@ -16,6 +16,19 @@ GET http://localhost:4000/events
 ### 2. READ - Buscar o evento específico pelo ID
 GET http://localhost:4000/events/{{eventId}}
 
+### 3. CREATE - Criar um novo evento
+POST http://localhost:4000/events
+Content-Type: application/json
+
+{
+    "description": "Show de Rock da UFOP - Lote 1",
+    "type": "CONCERT",
+    "date": "2025-10-20T20:00:00",
+    "startSales": "2025-08-01T10:00:00",
+    "endSales": "2025-10-19T18:00:00",
+    "price": 89.90
+}
+
 
 ### 3. UPDATE - Atualizar o preço do evento
 PUT http://localhost:4000/events/{{eventId}}
@@ -41,7 +54,7 @@ POST http://localhost:4000/sales
 Content-Type: application/json
 
 {
-    "eventId": "{{eventId}}",
+    "eventId": "4b5c1180-c8d5-4f17-b6e1-ea09393ffbb9",
     "userId": 1
 }
 
