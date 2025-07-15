@@ -78,6 +78,8 @@ services:
     container_name: users
     build:
       context: ./user
+    ports: # <-- CORREÇÃO AQUI
+      - "3000:3000"
     networks:
       - ticket-network
     depends_on:
@@ -90,6 +92,8 @@ services:
     container_name: sales
     build:
       context: ./sales
+    ports: # <-- CORREÇÃO AQUI
+      - "4000:4000"
     networks:
       - ticket-network
     depends_on:

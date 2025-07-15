@@ -1,13 +1,75 @@
+# Salva o ID do evento que você acabou de criar em uma variável
+@eventId = 182de079-40cf-43f2-9f9f-181114ffb345
+
+# Salva o ID da venda que vamos criar. Preencha após criar a venda.
+@saleId = 1
 
 
-POST http://localhost:8080/api/events
+### ============================
+### TESTES DO CRUD DE EVENTOS
+### ============================
+
+### 1. READ - Listar todos os eventos
+GET http://localhost:4000/events
+
+
+### 2. READ - Buscar o evento específico pelo ID
+GET http://localhost:4000/events/{{eventId}}
+
+
+### 3. UPDATE - Atualizar o preço do evento
+PUT http://localhost:4000/events/{{eventId}}
 Content-Type: application/json
 
 {
-    "description": "Show de Rock da UFOP",
+    "description": "Show de Rock da UFOP - Lote 2",
     "type": "CONCERT",
     "date": "2025-10-20T20:00:00",
     "startSales": "2025-08-01T10:00:00",
     "endSales": "2025-10-19T18:00:00",
-    "price": 75.50
+    "price": 99.90
 }
+
+
+### ============================
+### TESTES DO CRUD DE VENDAS
+### ============================
+
+### 4. CREATE - Criar uma nova venda para o evento
+# Supondo que o usuário tem o ID 1
+POST http://localhost:4000/sales
+Content-Type: application/json
+
+{
+    "eventId": "{{eventId}}",
+    "userId": 1
+}
+
+
+### 5. READ - Listar todas as vendas
+GET http://localhost:4000/sales
+
+
+### 6. READ - Buscar a venda específica pelo ID
+GET http://localhost:4000/sales/{{saleId}}
+
+
+### 7. UPDATE - Atualizar o status da venda para PAGO
+# Assumindo que seu DTO de atualização precisa do ID do usuário.
+# Se não precisar, pode remover a linha "userId".
+PUT http://localhost:4000/sales/{{saleId}}/status
+Content-Type: application/json
+
+{
+    "status": "PAID"
+}
+# Nota: O endpoint aqui pode ser "/sales/{{saleId}}" dependendo de como você implementou.
+# O "status" também deve ser um valor válido do seu enum `SaleStatus`.
+
+
+### 8. DELETE - Deletar a venda
+DELETE http://localhost:4000/sales/{{saleId}}
+
+
+### 9. DELETE - Deletar o evento (só funcionará se não houver mais vendas atreladas a ele)
+DELETE http://localhost:4000/events/{{eventId}}
