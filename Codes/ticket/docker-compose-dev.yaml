@@ -78,7 +78,7 @@ services:
     container_name: users
     build:
       context: ./user
-    ports: # <-- CORREÇÃO AQUI
+    ports:
       - "3000:3000"
     networks:
       - ticket-network
@@ -92,7 +92,7 @@ services:
     container_name: sales
     build:
       context: ./sales
-    ports: # <-- CORREÇÃO AQUI
+    ports:
       - "4000:4000"
     networks:
       - ticket-network

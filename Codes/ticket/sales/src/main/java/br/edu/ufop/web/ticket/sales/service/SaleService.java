@@ -44,11 +44,12 @@ public class SaleService {
         EventModel event = eventRepository.findById(request.eventId())
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + request.eventId()));
 
-        // Validações de regra de negócio (ex: data de venda, ingressos disponíveis) podem ser adicionadas aqui.
+        // Validações de regra de negócio (ex: data de venda, etc) podem ser adicionadas aqui.
 
         Sale domain = SaleConverter.toDomain(request);
         SaleModel model = SaleConverter.toModel(domain, event);
-        return SaleConverter.toResponse(saleRepository.save(model));
+        SaleModel savedModel = saleRepository.save(model);
+        return SaleConverter.toResponse(savedModel);
     }
     
     @Transactional
@@ -56,10 +57,11 @@ public class SaleService {
         SaleModel sale = saleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Sale not found with id: " + id));
         
-        // Regras de negócio para alteração de status
+        // Regras de negócio para alteração de status podem ser adicionadas aqui
         sale.setPurchaseStatus(request.newStatus());
 
-        return SaleConverter.toResponse(saleRepository.save(sale));
+        SaleModel updatedSale = saleRepository.save(sale);
+        return SaleConverter.toResponse(updatedSale);
     }
 
     @Transactional

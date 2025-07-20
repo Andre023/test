@@ -54,8 +54,8 @@ POST http://localhost:4000/sales
 Content-Type: application/json
 
 {
-    "eventId": "4b5c1180-c8d5-4f17-b6e1-ea09393ffbb9",
-    "userId": 1
+    "eventId": "b2d67f9a-cba5-48e4-a4b0-2c1513ad88a0",
+    "userId": "3913d9a5-930b-4c81-9baf-6b1dd831d68b"
 }
 
 
@@ -64,24 +64,20 @@ GET http://localhost:4000/sales
 
 
 ### 6. READ - Buscar a venda específica pelo ID
-GET http://localhost:4000/sales/{{saleId}}
+GET http://localhost:4000/sales/91ac880f-8714-4ca0-a090-639749162f69
 
 
 ### 7. UPDATE - Atualizar o status da venda para PAGO
 # Assumindo que seu DTO de atualização precisa do ID do usuário.
 # Se não precisar, pode remover a linha "userId".
-PUT http://localhost:4000/sales/{{saleId}}/status
+PATCH http://localhost:4000/sales/91ac880f-8714-4ca0-a090-639749162f69/status
 Content-Type: application/json
 
 {
-    "status": "PAID"
+    "newStatus": "PAID"
 }
-# Nota: O endpoint aqui pode ser "/sales/{{saleId}}" dependendo de como você implementou.
-# O "status" também deve ser um valor válido do seu enum `SaleStatus`.
-
-
 ### 8. DELETE - Deletar a venda
-DELETE http://localhost:4000/sales/{{saleId}}
+DELETE http://localhost:4000/sales/da5da005-dbf5-4865-af3f-9c106d439640
 
 
 ### 9. DELETE - Deletar o evento (só funcionará se não houver mais vendas atreladas a ele)
