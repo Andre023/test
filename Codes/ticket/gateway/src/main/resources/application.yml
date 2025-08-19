@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      # Definição das rotas para os microsserviços
+      routes:
+        - id: users-route
+          uri: lb://users
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - RewritePath=/api/users(?<segment>/?.*), /users$\{segment}
+
+        - id: sales-events-route
+          uri: lb://sales
+          predicates:
+            - Path=/api/events/**
+          filters:
+            - RewritePath=/api/events(?<segment>/?.*), /events$\{segment}
+
+        - id: sales-sales-route
+          uri: lb://sales
+          predicates:
+            - Path=/api/sales/**
+          filters:
+            - RewritePath=/api/sales(?<segment>/?.*), /sales$\{segment}
+
+      # Configuração Global de CORS
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "http://localhost:5173"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowed-headers: "*"
+            allow-credentials: true
+
+# Configuração do Eureka Client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://nameserver:8761/eureka

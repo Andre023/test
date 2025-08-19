@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class SaleModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
