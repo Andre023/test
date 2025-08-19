@@ -1,48 +1,63 @@
-# CSI607 - Sistemas Web II
+# Microsserviço de Vendas de Ingressos (Sales)
 
-## Lecture Notes and Codes
+Este projeto foi desenvolvido como parte da Atividade Prática 01 da disciplina **CSI607 - Sistemas Web II**.
 
-### *Prof. Fernando Bernardes de Oliveira, Ph.D.*
+O objetivo foi implementar um microsserviço de **Vendas (Sales)** para uma aplicação de gerenciamento de tickets. Este serviço é responsável por cadastrar eventos e processar a venda de ingressos para os usuários.
 
-#### [Department of Computer and Systems (DECSI)](https://decsi.ufop.br/)
+## Arquitetura
 
----
+A aplicação segue uma arquitetura de microsserviços, composta pelas seguintes partes:
 
-Here are available lecture notes and codes on CSI607 - Sistemas Web II course at [Universidade Federal de Ouro Preto (UFOP)](http://www.ufop.br). Semester 2025/1.
+* **`nameserver` (Eureka):** Responsável pelo registro e descoberta dos outros serviços na rede.
+* **`gateway` (Spring Cloud Gateway):** Ponto de entrada único para todas as requisições, roteando o tráfego para os microsserviços apropriados.
+* **`users`:** Microsserviço para gerenciamento de usuários.
+* **`sales`:** Microsserviço focado na gestão de eventos e vendas, atendendo aos requisitos da atividade.
+* **`postgres-users` & `postgres-sales`**: Instâncias do PostgreSQL para persistência dos dados de cada serviço.
 
-Proposed content for this semester:
+## Pré-requisitos
 
-1. Java Spring Boot
-1. Spring Web
-1. Spring JPA
-1. Microservices
-1. Messaging Systems
-1. Containers and orchestration
-1. React.js
+Para executar o projeto, você precisará ter instalado:
 
----
+* [Docker](https://www.docker.com/get-started)
+* [Docker Compose](https://docs.docker.com/compose/install/)
 
-**Lecture notes and additional resources:**
+## Como Executar o Projeto
 
-1. [Setting up development environment](./LectureNotes/setting-environment.md)
-1. [Spring Framework](./LectureNotes/spring-framework.md)
-1. [Spring Boot](./LectureNotes/spring-boot.md)
-1. [Spring JPA](./LectureNotes/spring-jpa.md)
-1. [Architecture](./LectureNotes/architecture.md)
-1. [Spring Microservices](./LectureNotes/spring-microservices.md)
-1. [Messaging Systems](./LectureNotes/messaging-system.md)
-1. [Containers and orchestration](./LectureNotes/containers.md)
-1. [React.js](./LectureNotes/reactjs.md)
+1.  Clone este repositório.
+2.  Navegue até a pasta `Codes/ticket/`.
+3.  Execute o seguinte comando no terminal para construir as imagens e iniciar todos os contêineres:
 
----
+    ```bash
+    docker-compose -f docker-compose-dev.yaml up --build
+    ```
 
-License: [Creative Commons BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+A aplicação estará totalmente disponível quando todos os serviços forem iniciados.
 
-Best regards,  
-Fernando B Oliveira.
+### Acessando os Serviços
 
-[Contact and info.](mailto:fboliveira@ufop.edu.br)
+* **API Gateway:** `http://localhost:8080` (ponto de entrada para a API)
+* **Eureka Dashboard:** `http://localhost:8761` (para visualizar os serviços registrados)
+* **pgAdmin:** `http://localhost:8123` (para gerenciar os bancos de dados)
+    * **Login:** `web@ufop.edu.br`
+    * **Senha:** `123456`
 
----
+## Endpoints da API (Microsserviço Sales)
 
-![May the force be with you!](https://media.giphy.com/media/SW52VX6Xtzk1q/giphy.gif)
+O microsserviço `sales` implementa as operações de CRUD para as entidades `Event` e `Sale`, expondo os seguintes endpoints na porta `4000`.
+
+### Eventos (`/events`)
+
+* `GET /events`: Lista todos os eventos.
+* `GET /events/{id}`: Busca um evento por ID.
+* `POST /events`: Cria um novo evento.
+* `PUT /events/{id}`: Atualiza um evento existente.
+* `DELETE /events/{id}`: Remove um evento.
+
+### Vendas (`/sales`)
+
+* `GET /sales`: Lista todas as vendas.
+* `POST /sales`: Cria uma nova venda (compra de ingresso).
+* `PATCH /sales/{id}/status`: Atualiza o status de uma venda (ex: para `PAID`).
+* `DELETE /sales/{id}`: Remove uma venda.
+
+Para uma documentação detalhada e exemplos de requisições, consulte o arquivo [endpoints.md](Codes/ticket/sales/endpoints.md) ou utilize o arquivo [sales.rest](Codes/ticket/sales/sales.rest) com a extensão REST Client no VS Code.
